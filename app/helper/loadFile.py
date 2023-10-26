@@ -17,7 +17,7 @@ classDict = dict(zip(classNames, range(2)))
 binaryDict = dict(zip(['Absent', 'Present'], range(2)))
 
 # Extract vector y, convert to NumPy array
-y = np.asarray([classDict[value] for value in classLabelsInt])
+y = np.asarray([int(num) for num in doc.col_values(3, 1, 463)])
 
 # Preallocate memory, then extract excel data to matrix X
 old_X = np.empty((462, 10))
@@ -29,8 +29,8 @@ for i, col_id in enumerate(range(1, 11)):
     else:
         old_X[:, i] = np.asarray(doc.col_values(col_id, 1, 463))
 
-X = old_X[:, [1,2,6]]
-attributeNames = [doc.cell_value(0, idx) for idx in [2,3,7]]
+X = old_X[:, [1,6]]
+attributeNames = [doc.cell_value(0, idx) for idx in [2,7]]
 
 # Compute values of N, M and C.
 N = len(y)
