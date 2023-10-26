@@ -29,8 +29,8 @@ for i, col_id in enumerate(range(1, 11)):
     else:
         X[:, i] = np.asarray(doc.col_values(col_id, 1, 463))
 
-new_X = X[:, [2,3,7]]
-print(new_X)
+new_X = X[:, [1,2,6]]
+
 # Compute values of N, M and C.
 N = len(y)
 M = len(attributeNames)
