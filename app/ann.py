@@ -27,7 +27,7 @@ if do_pca_preprocessing:
 
 
 # Parameters for neural network classifier
-n_hidden_units = 5      # number of hidden units
+n_hidden_units = 2      # number of hidden units
 n_replicates = 1        # number of networks trained in each k-fold
 max_iter = 10000
 
@@ -86,39 +86,10 @@ for (k, (train_index, test_index)) in enumerate(CV.split(X,y)):
     summaries_axes[0].set_ylabel('Loss')
     summaries_axes[0].set_title('Learning curves')
 
-# Display the MSE across folds
-summaries_axes[1].bar(np.arange(1, K+1), np.squeeze(np.asarray(errors)), color=color_list)
-summaries_axes[1].set_xlabel('Fold')
-summaries_axes[1].set_xticks(np.arange(1, K+1))
-summaries_axes[1].set_ylabel('MSE')
-summaries_axes[1].set_title('Test mean-squared-error')
-    
-print('Diagram of best neural net in last fold:')
-weights = [net[i].weight.data.numpy().T for i in [0,2]]
-biases = [net[i].bias.data.numpy() for i in [0,2]]
-tf =  [str(net[i]) for i in [1,2]]
-draw_neural_net(weights, biases, tf, attribute_names=attributeNames)
+
 
 # Print the average classification error rate
 print('\nEstimated generalization error, RMSE: {0}'.format(round(np.sqrt(np.mean(errors)), 4)))
 
-# When dealing with regression outputs, a simple way of looking at the quality
-# of predictions visually is by plotting the estimated value as a function of 
-# the true/known value - these values should all be along a straight line "y=x", 
-# and if the points are above the line, the model overestimates, whereas if the
-# points are below the y=x line, then the model underestimates the value
-plt.figure(figsize=(10,10))
-y_est = y_test_est.data.numpy(); y_true = y_test.data.numpy()
-axis_range = [np.min([y_est, y_true])-1,np.max([y_est, y_true])+1]
-plt.plot(axis_range,axis_range,'k--')
-plt.plot(y_true, y_est,'ob',alpha=.25)
-plt.legend(['Perfect estimation','Model estimations'])
-plt.title('Alcohol content: estimated versus true value (for last CV-fold)')
-plt.ylim(axis_range); plt.xlim(axis_range)
-plt.xlabel('True value')
-plt.ylabel('Estimated value')
-plt.grid()
-
-plt.show()
 
 print('Ran Exercise 8.2.5')
