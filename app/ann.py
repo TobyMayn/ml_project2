@@ -8,9 +8,10 @@ from scipy.io import loadmat
 from sklearn import model_selection
 from toolbox_02450 import draw_neural_net, train_neural_net
 
+y = np.ndarray.transpose(np.asarray([[float(num) for num in doc.col_values(3, 1, 463)]]))
+
 N, M = X.shape
 C = 2
-
 # Normalize data
 X = stats.zscore(X)
                 
@@ -27,7 +28,7 @@ if do_pca_preprocessing:
 
 
 # Parameters for neural network classifier
-n_hidden_units = 2      # number of hidden units
+n_hidden_units = 1000      # number of hidden units
 n_replicates = 1        # number of networks trained in each k-fold
 max_iter = 10000
 

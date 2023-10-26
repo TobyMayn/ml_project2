@@ -9,6 +9,7 @@ from scipy.io import loadmat
 from sklearn import model_selection
 from toolbox_02450 import rlr_validate
 
+y = np.asarray([float(num) for num in doc.col_values(3, 1, 463)])
 N, M = X.shape
 
 # Add offset attribute

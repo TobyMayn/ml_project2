@@ -16,9 +16,6 @@ classDict = dict(zip(classNames, range(2)))
 
 binaryDict = dict(zip(['Absent', 'Present'], range(2)))
 
-# Extract vector y, convert to NumPy array
-y = np.asarray([float(num) for num in doc.col_values(3, 1, 463)])
-
 # Preallocate memory, then extract excel data to matrix X
 old_X = np.empty((462, 10))
 for i, col_id in enumerate(range(1, 11)):
