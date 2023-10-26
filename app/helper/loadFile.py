@@ -2,7 +2,7 @@ import numpy as np
 import xlrd
 
 # Load xls sheet with data
-doc = xlrd.open_workbook('app/Data/SAheart.xls').sheet_by_index(0)
+doc = xlrd.open_workbook('app/data/SAheart.xls').sheet_by_index(0)
 
 # Extract attribute names (1st row, column 4 to 12)
 attributeNames = doc.row_values(0, 1, 11)
