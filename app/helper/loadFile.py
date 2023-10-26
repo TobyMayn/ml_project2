@@ -30,6 +30,7 @@ for i, col_id in enumerate(range(1, 11)):
         X[:, i] = np.asarray(doc.col_values(col_id, 1, 463))
 
 new_X = X[:, [1,2,6]]
+new_attributues = attributeNames[:, [1,2,6]]
 
 # Compute values of N, M and C.
 N = len(y)
