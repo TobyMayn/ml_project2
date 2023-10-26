@@ -1,4 +1,4 @@
-# exercise 8.1.1
+# exercise 8.1.1 script modified to our needs
 
 import numpy as np
 import sklearn.linear_model as lm
