@@ -30,7 +30,7 @@ X = old_X[:, [1,6]]
 attributeNames = [doc.cell_value(0, idx) for idx in [2,7]]
 
 # Compute values of N, M and C.
-N = len(y)
+
 M = len(attributeNames)
 C = len(classNames)
 
