@@ -19,6 +19,40 @@ def setupAnn(hidden_units):
                     )
     return model
 
+def reg(X_train, y_train, X_test, y_test, lambda1):
+    M1 = M + 1
+    
+    X_train = X_train
+    y_train = y_train
+    X_test = X_test
+    y_test = y_test
+
+    X_train = np.concatenate((np.ones((X_train.shape[0],1)),X_train),1)
+    y_train = np.concatenate((np.ones((y_train.shape[0],1)),y_train),1)
+    X_test = np.concatenate((np.ones((X_test.shape[0],1)),X_test),1)
+    y_test = np.concatenate((np.ones((y_test.shape[0],1)),y_test),1)
+    
+
+    
+    w = []
+
+    # Standardize the training and set set based on training set moments
+    mu = np.mean(X_train[:, 1:], 0)
+    sigma = np.std(X_train[:, 1:], 0)
+    
+    X_train[:, 1:] = (X_train[:, 1:] - mu) / sigma
+    X_test[:, 1:] = (X_test[:, 1:] - mu) / sigma
+    
+    # precompute terms
+    Xty = X_train.T @ y_train
+    XtX = X_train.T @ X_train
+    # Compute parameters for current value of lambda and current CV fold
+    # note: "linalg.lstsq(a,b)" is substitue for Matlab's left division operator "\"
+    lambdaI = lambda1 * np.eye(M1)
+    lambdaI[0,0] = 0 # remove bias regularization
+    w[0] = np.linalg.solve(XtX+lambdaI,Xty).squeeze()
+    # Evaluate training and test performance
+    return np.power(y_test-X_test @ w[0].T,2).mean(axis=0)
 
 def ann(x_train, y_train, x_test, y_test, model):
     n_replicates = 1        # number of networks trained in each k-fold
@@ -50,6 +84,8 @@ def ann(x_train, y_train, x_test, y_test, model):
 
 y = np.asarray([float(num) for num in doc.col_values(3, 1, 463)])
 
+N, M = X.shape
+
 # Define K1, K2, and S
 K1 = 10  # Number of outer cross-validation folds
 K2 = 10 # Number of inner cross-validation folds
@@ -63,6 +99,7 @@ CV1 = model_selection.KFold(n_splits=K1, shuffle=True)
 
 for (i, (train_index, test_index)) in enumerate(CV1.split(X,y)):
     hidden_units = i+1
+    lambda1 = i-2
     ann_model = setupAnn(hidden_units)
 
     X_train1 = X[train_index,:] # D_par
@@ -91,4 +128,13 @@ for (i, (train_index, test_index)) in enumerate(CV1.split(X,y)):
                     y_test2 = np.ndarray.transpose(y_test2)
                         
                     ann_errors.append(ann(X_train2, y_train2, X_test2, y_test2, ann_model))
+                case 1:
+                    reg_errors.append(reg(X_train2, y_train2, X_test2, y_test2, lambda1))
+                    
+                case 2:
+                    #y_train_mean = y_train2.mean()
+                    #baseline_errors.append()
+                    pass
+
+    
 
