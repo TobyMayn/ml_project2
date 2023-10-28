@@ -102,6 +102,8 @@ ann_gen_error = []
 reg_gen_error = []
 baseline_gen_error = []
 
+best_test_error = []
+
 X_train2 = 0
 y_train2 = 0
 X_test2 = 0
@@ -153,5 +155,18 @@ for (i, (train_index, test_index)) in enumerate(CV1.split(X,y)):
     reg_gen_error = np.sqrt(np.mean(reg_errors))
 
     #baseline_gen_error = sum(len((X_test2[j])+len(y_test2[j]))/(len(X_train1[i])+len(y_train1[i]))*baseline_errors for j in range(K2))
-
     baseline_gen_error = np.sqrt(np.mean(baseline_errors))
+
+    m_model = min(ann_gen_error, reg_gen_error, baseline_gen_error)
+    
+    match m_model:
+        case ann_gen_error:
+            best_test_error.append(ann(X_train1, y_train1, X_test1, y_test1, ann_model))
+        case reg_gen_error:
+            best_test_error.append(reg(X_train1, y_train1, X_test1, y_test1, lambda1))
+        case baseline_gen_error:
+            y_train_mean = y_train1.mean()
+            mse = np.mean(np.square(y_test1 - y_train_mean))
+            best_test_error.append(mse)
+
+
