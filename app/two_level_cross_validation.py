@@ -47,6 +47,7 @@ def ann(x_train, y_train, x_test, y_test, model):
     mse = (sum(se).type(torch.float)/len(y_test)).data.numpy() #mean
 
     return mse
+y = np.asarray([float(num) for num in doc.col_values(3, 1, 463)])
 
 # Define K1, K2, and S
 K1 = 10  # Number of outer cross-validation folds
@@ -80,6 +81,8 @@ for (i, (train_index, test_index)) in enumerate(CV1.split(X,y)):
             # Repeat for all models
             match s:
                 case 0:
+                    y_train2 = np.ndarray.transpose(y_train2)
+                    y_test2 = np.ndarray.transpose(y_test2)
                     for x in range(5):
                         hidden_units = x+1
                         model = setupAnn(hidden_units)
