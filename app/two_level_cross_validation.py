@@ -23,9 +23,16 @@ def reg(X_train, y_train, X_test, y_test, lambda1):
     M1 = M + 1
     
     X_train = X_train
-    y_train = y_train
+    
+    y_train = y_train.tolist()
+    y_train = list(map(lambda x: x[0], y_train))
+    y_train = np.array(y_train)
+    
     X_test = X_test
-    y_test = y_test
+
+    y_test = y_test.tolist()
+    y_test = list(map(lambda x: x[0], y_test))
+    y_test = np.array(y_test)
 
     X_train = np.concatenate((np.ones((X_train.shape[0],1)),X_train),1)
     X_test = np.concatenate((np.ones((X_test.shape[0],1)),X_test),1)    
@@ -79,7 +86,7 @@ def ann(x_train, y_train, x_test, y_test, model):
 
     return mse
 
-y = np.asarray([float(num) for num in doc.col_values(3, 1, 463)])
+y = np.ndarray.transpose(np.asarray([[float(num) for num in doc.col_values(3, 1, 463)]]))
 
 N, M = X.shape
 
@@ -120,10 +127,7 @@ for (i, (train_index, test_index)) in enumerate(CV1.split(X,y)):
             # Save the performance metric
             # Repeat for all models
             match s:
-                case 0:
-                    y_train2 = np.ndarray.transpose([y_train2])
-                    y_test2 = np.ndarray.transpose([y_test2])
-                        
+                case 0: 
                     ann_errors.append(ann(X_train2, y_train2, X_test2, y_test2, ann_model))
                 case 1:
                     reg_errors.append(reg(X_train2, y_train2, X_test2, y_test2, lambda1))
