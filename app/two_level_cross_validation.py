@@ -28,10 +28,7 @@ def reg(X_train, y_train, X_test, y_test, lambda1):
     y_test = y_test
 
     X_train = np.concatenate((np.ones((X_train.shape[0],1)),X_train),1)
-    y_train = np.concatenate((np.ones((y_train.shape[0],1)),y_train),1)
-    X_test = np.concatenate((np.ones((X_test.shape[0],1)),X_test),1)
-    y_test = np.concatenate((np.ones((y_test.shape[0],1)),y_test),1)
-    
+    X_test = np.concatenate((np.ones((X_test.shape[0],1)),X_test),1)    
 
     
     w = []
@@ -50,7 +47,7 @@ def reg(X_train, y_train, X_test, y_test, lambda1):
     # note: "linalg.lstsq(a,b)" is substitue for Matlab's left division operator "\"
     lambdaI = np.power(10., lambda1) * np.eye(M1)
     lambdaI[0,0] = 0 # remove bias regularization
-    w[0] = np.linalg.solve(XtX+lambdaI,Xty).squeeze()
+    w.append(np.linalg.solve(XtX+lambdaI,Xty).squeeze())
     # Evaluate training and test performance
     return np.power(y_test-X_test @ w[0].T,2).mean(axis=0)
 
@@ -87,8 +84,8 @@ y = np.asarray([float(num) for num in doc.col_values(3, 1, 463)])
 N, M = X.shape
 
 # Define K1, K2, and S
-K1 = 10  # Number of outer cross-validation folds
-K2 = 10 # Number of inner cross-validation folds
+K1 = 5  # Number of outer cross-validation folds
+K2 = 5 # Number of inner cross-validation folds
 S = 3   # Number of different models
 ann_errors = []
 reg_errors = []
@@ -124,8 +121,8 @@ for (i, (train_index, test_index)) in enumerate(CV1.split(X,y)):
             # Repeat for all models
             match s:
                 case 0:
-                    y_train2 = np.ndarray.transpose(y_train2)
-                    y_test2 = np.ndarray.transpose(y_test2)
+                    y_train2 = np.ndarray.transpose([y_train2])
+                    y_test2 = np.ndarray.transpose([y_test2])
                         
                     ann_errors.append(ann(X_train2, y_train2, X_test2, y_test2, ann_model))
                 case 1:
