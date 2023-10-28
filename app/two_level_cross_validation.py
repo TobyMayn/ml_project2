@@ -133,8 +133,9 @@ for (i, (train_index, test_index)) in enumerate(CV1.split(X,y)):
                     reg_errors.append(reg(X_train2, y_train2, X_test2, y_test2, lambda1))
                     
                 case 2:
-                    #y_train_mean = y_train2.mean()
-                    #baseline_errors.append()
+                    y_train_mean = y_train2.mean()
+                    mse = np.mean(np.square(y_test2 - y_train_mean))
+                    baseline_errors.append(mse)
                     pass
 
     
