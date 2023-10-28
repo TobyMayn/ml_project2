@@ -53,6 +53,9 @@ y = np.asarray([float(num) for num in doc.col_values(3, 1, 463)])
 K1 = 10  # Number of outer cross-validation folds
 K2 = 10 # Number of inner cross-validation folds
 S = 3   # Number of different models
+ann_errors = []
+reg_errors = []
+baseline_errors = []
 
 # Create the outer cross-validation splits
 CV1 = model_selection.KFold(n_splits=K1, shuffle=True)
@@ -72,9 +75,7 @@ for (i, (train_index, test_index)) in enumerate(CV1.split(X,y)):
         y_test2 = y_train1[test_index]
 
         for s in range(S):
-            ann_errors = []
-            reg_errors = []
-            baseline_errors = []
+            
             # Train model on X_train2, y_train2
             # Evaluate model on X_test2, y_test2
             # Save the performance metric
