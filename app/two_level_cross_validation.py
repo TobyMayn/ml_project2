@@ -4,46 +4,8 @@ import torch
 from helper.loadFile import *
 from scipy import stats
 from scipy.io import loadmat
-from sklearn import model_selection
-from toolbox_02450 import draw_neural_net, train_neural_net # Replace with the appropriate metric for your problem
-
-# Define K1, K2, and S
-K1 = 10  # Number of outer cross-validation folds
-K2 = 10 # Number of inner cross-validation folds
-S = 3   # Number of different models
-
-# Create the outer cross-validation splits
-CV1 = KFold(n_splits=K1, shuffle=True)
-
-for (i, (train_index, test_index)) in enumerate(CV1.split(X,y)):
-    X_train1 = X[train_index,:] # D_par
-    y_train1 = y[train_index] # D_par
-    X_test1 = X[test_index,:] # D_test
-    y_test1 = y[test_index] # D_test
-
-    CV2 = KFold(n_splits=K2, shuffle=True)
-
-    for (j, (train_index, test_index)) in enumerate(CV2.split(X_train1,y_train1)):
-        X_train2 = X_train1[train_index,:]
-        y_train2 = y_train1[train_index]
-        X_test2 = X_train1[test_index,:]
-        y_test2 = y_train1[test_index]
-
-        for s in range(S):
-            ann_errors = []
-            reg_errors = []
-            baseline_errors = []
-            # Train model on X_train2, y_train2
-            # Evaluate model on X_test2, y_test2
-            # Save the performance metric
-            # Repeat for all models
-            match s:
-                case 0:
-                    for x in range(5):
-                        hidden_units = x+1
-                        model = setupAnn(hidden_units)
-                        ann_errors.append(ann(X_train2, y_train2, X_test2, y_test2, model))
-
+from sklearn import model_selection, Kfold
+from toolbox_02450 import draw_neural_net, train_neural_net
 
 def setupAnn(hidden_units):
     n_hidden_units = hidden_units      # number of hidden units
@@ -84,3 +46,41 @@ def ann(x_train, y_train, x_test, y_test, model):
     mse = (sum(se).type(torch.float)/len(y_test)).data.numpy() #mean
 
     return mse
+
+# Define K1, K2, and S
+K1 = 10  # Number of outer cross-validation folds
+K2 = 10 # Number of inner cross-validation folds
+S = 3   # Number of different models
+
+# Create the outer cross-validation splits
+CV1 = KFold(n_splits=K1, shuffle=True)
+
+for (i, (train_index, test_index)) in enumerate(CV1.split(X,y)):
+    X_train1 = X[train_index,:] # D_par
+    y_train1 = y[train_index] # D_par
+    X_test1 = X[test_index,:] # D_test
+    y_test1 = y[test_index] # D_test
+
+    CV2 = KFold(n_splits=K2, shuffle=True)
+
+    for (j, (train_index, test_index)) in enumerate(CV2.split(X_train1,y_train1)):
+        X_train2 = X_train1[train_index,:]
+        y_train2 = y_train1[train_index]
+        X_test2 = X_train1[test_index,:]
+        y_test2 = y_train1[test_index]
+
+        for s in range(S):
+            ann_errors = []
+            reg_errors = []
+            baseline_errors = []
+            # Train model on X_train2, y_train2
+            # Evaluate model on X_test2, y_test2
+            # Save the performance metric
+            # Repeat for all models
+            match s:
+                case 0:
+                    for x in range(5):
+                        hidden_units = x+1
+                        model = setupAnn(hidden_units)
+                        ann_errors.append(ann(X_train2, y_train2, X_test2, y_test2, model))
+
