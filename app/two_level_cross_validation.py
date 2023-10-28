@@ -9,8 +9,7 @@ from toolbox_02450 import draw_neural_net, train_neural_net
 
 def setupAnn(hidden_units):
     n_hidden_units = hidden_units      # number of hidden units
-    n_replicates = 1        # number of networks trained in each k-fold
-    max_iter = 10000
+    
 
     model = lambda: torch.nn.Sequential(
                     torch.nn.Linear(M, n_hidden_units), #M features to n_hidden_units
@@ -22,6 +21,8 @@ def setupAnn(hidden_units):
 
 
 def ann(x_train, y_train, x_test, y_test, model):
+    n_replicates = 1        # number of networks trained in each k-fold
+    max_iter = 10000
 
     loss_fn = torch.nn.MSELoss() # notice how this is now a mean-squared-error loss
 
