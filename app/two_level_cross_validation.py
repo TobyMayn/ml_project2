@@ -87,8 +87,8 @@ y = np.asarray([float(num) for num in doc.col_values(3, 1, 463)])
 N, M = X.shape
 
 # Define K1, K2, and S
-K1 = 10  # Number of outer cross-validation folds
-K2 = 10 # Number of inner cross-validation folds
+K1 = 5  # Number of outer cross-validation folds
+K2 = 5 # Number of inner cross-validation folds
 S = 3   # Number of different models
 ann_errors = []
 reg_errors = []
