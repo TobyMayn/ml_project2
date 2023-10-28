@@ -4,7 +4,7 @@ import torch
 from helper.loadFile import *
 from scipy import stats
 from scipy.io import loadmat
-from sklearn import model_selection, Kfold
+from sklearn import model_selection
 from toolbox_02450 import draw_neural_net, train_neural_net
 
 def setupAnn(hidden_units):
@@ -53,7 +53,7 @@ K2 = 10 # Number of inner cross-validation folds
 S = 3   # Number of different models
 
 # Create the outer cross-validation splits
-CV1 = KFold(n_splits=K1, shuffle=True)
+CV1 = model_selection.KFold(n_splits=K1, shuffle=True)
 
 for (i, (train_index, test_index)) in enumerate(CV1.split(X,y)):
     X_train1 = X[train_index,:] # D_par
@@ -61,7 +61,7 @@ for (i, (train_index, test_index)) in enumerate(CV1.split(X,y)):
     X_test1 = X[test_index,:] # D_test
     y_test1 = y[test_index] # D_test
 
-    CV2 = KFold(n_splits=K2, shuffle=True)
+    CV2 = model_selection.KFold(n_splits=K2, shuffle=True)
 
     for (j, (train_index, test_index)) in enumerate(CV2.split(X_train1,y_train1)):
         X_train2 = X_train1[train_index,:]
