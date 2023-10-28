@@ -136,7 +136,5 @@ for (i, (train_index, test_index)) in enumerate(CV1.split(X,y)):
                     y_train_mean = y_train2.mean()
                     mse = np.mean(np.square(y_test2 - y_train_mean))
                     baseline_errors.append(mse)
-                    pass
-
     
 
