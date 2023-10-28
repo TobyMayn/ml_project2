@@ -102,6 +102,11 @@ ann_gen_error = []
 reg_gen_error = []
 baseline_gen_error = []
 
+X_train2 = 0
+y_train2 = 0
+X_test2 = 0
+y_test2 = 0 
+
 # Create the outer cross-validation splits
 CV1 = model_selection.KFold(n_splits=K1, shuffle=True)
 
@@ -141,9 +146,12 @@ for (i, (train_index, test_index)) in enumerate(CV1.split(X,y)):
                     mse = np.mean(np.square(y_test2 - y_train_mean))
                     baseline_errors.append(mse)
 
-    ann_gen_error = sum(len((X_test2[j])+len(y_test2[j]))/(len(X_train1[i])+len(y_train1[i]))*ann_errors for j in range(K2))
-
-    reg_gen_error = sum(len((X_test2[j])+len(y_test2[j]))/(len(X_train1[i])+len(y_train1[i]))*reg_errors for j in range(K2))
+    #ann_gen_error = sum(len((X_test2[j])+len(y_test2[j]))/(len(X_train1[i])+len(y_train1[i]))*ann_errors for j in range(K2))
+    ann_gen_error = np.sqrt(np.mean(ann_errors))
     
-    baseline_gen_error = sum(len((X_test2[j])+len(y_test2[j]))/(len(X_train1[i])+len(y_train1[i]))*baseline_errors for j in range(K2))
+    #reg_gen_error = sum(len((X_test2[j])+len(y_test2[j]))/(len(X_train1[i])+len(y_train1[i]))*reg_errors for j in range(K2))
+    reg_gen_error = np.sqrt(np.mean(reg_errors))
 
+    #baseline_gen_error = sum(len((X_test2[j])+len(y_test2[j]))/(len(X_train1[i])+len(y_train1[i]))*baseline_errors for j in range(K2))
+
+    baseline_gen_error = np.sqrt(np.mean(baseline_errors))
