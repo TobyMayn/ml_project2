@@ -47,6 +47,7 @@ def ann(x_train, y_train, x_test, y_test, model):
     mse = (sum(se).type(torch.float)/len(y_test)).data.numpy() #mean
 
     return mse
+
 y = np.asarray([float(num) for num in doc.col_values(3, 1, 463)])
 
 # Define K1, K2, and S
@@ -61,6 +62,9 @@ baseline_errors = []
 CV1 = model_selection.KFold(n_splits=K1, shuffle=True)
 
 for (i, (train_index, test_index)) in enumerate(CV1.split(X,y)):
+    hidden_units = i+1
+    ann_model = setupAnn(hidden_units)
+
     X_train1 = X[train_index,:] # D_par
     y_train1 = y[train_index] # D_par
     X_test1 = X[test_index,:] # D_test
@@ -69,6 +73,7 @@ for (i, (train_index, test_index)) in enumerate(CV1.split(X,y)):
     CV2 = model_selection.KFold(n_splits=K2, shuffle=True)
 
     for (j, (train_index, test_index)) in enumerate(CV2.split(X_train1,y_train1)):
+
         X_train2 = X_train1[train_index,:]
         y_train2 = y_train1[train_index]
         X_test2 = X_train1[test_index,:]
@@ -84,8 +89,6 @@ for (i, (train_index, test_index)) in enumerate(CV1.split(X,y)):
                 case 0:
                     y_train2 = np.ndarray.transpose(y_train2)
                     y_test2 = np.ndarray.transpose(y_test2)
-                    for x in range(5):
-                        hidden_units = x+1
-                        model = setupAnn(hidden_units)
-                        ann_errors.append(ann(X_train2, y_train2, X_test2, y_test2, model))
+                        
+                    ann_errors.append(ann(X_train2, y_train2, X_test2, y_test2, ann_model))
 
