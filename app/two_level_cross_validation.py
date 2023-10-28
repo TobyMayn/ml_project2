@@ -39,7 +39,7 @@ for (i, (train_index, test_index)) in enumerate(CV1.split(X,y)):
             # Repeat for all models
             match s:
                 case 0:
-                    for x in range(5)
+                    for x in range(5):
                         hidden_units = x+1
                         model = setupAnn(hidden_units)
                         ann_errors.append(ann(X_train2, y_train2, X_test2, y_test2, model))
