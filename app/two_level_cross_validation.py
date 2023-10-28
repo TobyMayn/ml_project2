@@ -48,7 +48,7 @@ def reg(X_train, y_train, X_test, y_test, lambda1):
     XtX = X_train.T @ X_train
     # Compute parameters for current value of lambda and current CV fold
     # note: "linalg.lstsq(a,b)" is substitue for Matlab's left division operator "\"
-    lambdaI = lambda1 * np.eye(M1)
+    lambdaI = np.power(10., lambda1) * np.eye(M1)
     lambdaI[0,0] = 0 # remove bias regularization
     w[0] = np.linalg.solve(XtX+lambdaI,Xty).squeeze()
     # Evaluate training and test performance
