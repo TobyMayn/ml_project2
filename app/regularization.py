@@ -9,7 +9,8 @@ from scipy.io import loadmat
 from sklearn import model_selection
 from toolbox_02450 import rlr_validate
 
-y = np.asarray([float(num) for num in doc.col_values(3, 1, 463)])
+#y = np.asarray([float(num) for num in doc.col_values(3, 1, 463)])
+y = np.ndarray.transpose(np.asarray([[float(num) for num in doc.col_values(3, 1, 463)]]))
 N, M = X.shape
 
 # Add offset attribute
@@ -44,9 +45,14 @@ for train_index, test_index in CV.split(X,y):
     
     # extract training and test set for current CV fold
     X_train = X[train_index]
-    y_train = y[train_index]
+    y_train = y[train_index].tolist()
+    y_train = list(map(lambda x: x[0], y_train))
+    y_train = np.array(y_train)
     X_test = X[test_index]
-    y_test = y[test_index]
+    y_test = y[test_index].tolist()
+    y_test = list(map(lambda x: x[0], y_test))
+    y_test = np.array(y_test)
+
     internal_cross_validation = 10    
     
     opt_val_err, opt_lambda, mean_w_vs_lambda, train_err_vs_lambda, test_err_vs_lambda = rlr_validate(X_train, y_train, lambdas, internal_cross_validation)
