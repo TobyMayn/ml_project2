@@ -160,10 +160,13 @@ for (i, (train_index, test_index)) in enumerate(CV1.split(X,y)):
     m_model = min(ann_gen_error, reg_gen_error, baseline_gen_error)
     
     if m_model == ann_gen_error:
+        print("ANN")
         best_test_error.append(ann(X_train1, y_train1, X_test1, y_test1, ann_model))
     elif m_model == reg_gen_error:
+        print("reg")
         best_test_error.append(reg(X_train1, y_train1, X_test1, y_test1, lambda1))
     elif m_model == baseline_gen_error:
+        print("baseline")
         y_train_mean = y_train1.mean()
         mse = np.mean(np.square(y_test1 - y_train_mean))
         best_test_error.append(mse)
