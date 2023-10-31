@@ -120,7 +120,6 @@ y_test2 = 0
 CV1 = model_selection.KFold(n_splits=K1, shuffle=True)
 
 for (i, (train_index, test_index)) in enumerate(CV1.split(X,y)):
-    lambda1 = i-2
 
     X_train1 = X[train_index,:] # D_par
     y_train1 = y[train_index] # D_par
@@ -172,9 +171,30 @@ for (i, (train_index, test_index)) in enumerate(CV1.split(X,y)):
 
                     ann_optimal_h.append(h)
                     ann_val_err.append(min_err)
-                    
+
                 case 1:
-                    reg_errors.append(reg(X_train2, y_train2, X_test2, y_test2, lambda1))
+                    min_err = 100000
+                    lamb = 0
+                    for i in range(5):
+                        temp = 0
+                        match i:
+                            case 0:
+                                temp = reg(X_train1, y_train1, X_test1, y_test1, -2)
+                            case 1:
+                                temp = reg(X_train1, y_train1, X_test1, y_test1, -1)
+                            case 2:
+                                temp = reg(X_train1, y_train1, X_test1, y_test1, 0)
+                            case 3:
+                                temp = reg(X_train1, y_train1, X_test1, y_test1, 1)
+                            case 4:
+                                temp = reg(X_train1, y_train1, X_test1, y_test1, 2)
+
+                        if temp < min_err:
+                            min_err = temp
+                            lamb = i+1
+
+                    reg_optimal_lambda.append(lamb)
+                    reg_val_err.append(min_err)
                     
                 case 2:
                     y_train_mean = y_train2.mean()
