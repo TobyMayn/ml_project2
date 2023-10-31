@@ -95,11 +95,19 @@ K1 = 5  # Number of outer cross-validation folds
 K2 = 5 # Number of inner cross-validation folds
 S = 3   # Number of different models
 
-ann_optimal_h = []
-ann_val_err = []
 
-reg_optimal_lambda = []
-reg_val_err = []
+ann1_val_err = []
+ann2_val_err = []
+ann3_val_err = []
+ann4_val_err = []
+ann5_val_err = []
+
+reg1_val_err = []
+reg2_val_err = []
+reg3_val_err = []
+reg4_val_err = []
+reg5_val_err = []
+
 
 ann_errors = []
 reg_errors = []
@@ -155,22 +163,15 @@ for (i, (train_index, test_index)) in enumerate(CV1.split(X,y)):
                         temp = 0
                         match i:
                             case 0:
-                                temp = ann(X_train2, y_train2, X_test2, y_test2, ann_model1)
+                                ann1_val_err.append(ann(X_train2, y_train2, X_test2, y_test2, ann_model1))
                             case 1:
-                                temp = ann(X_train2, y_train2, X_test2, y_test2, ann_model2)
+                                ann2_val_err.append(ann(X_train2, y_train2, X_test2, y_test2, ann_model2))
                             case 2:
-                                temp = ann(X_train2, y_train2, X_test2, y_test2, ann_model3)
+                                ann3_val_err.append(ann(X_train2, y_train2, X_test2, y_test2, ann_model3))
                             case 3:
-                                temp = ann(X_train2, y_train2, X_test2, y_test2, ann_model4)
+                                ann4_val_err.append(ann(X_train2, y_train2, X_test2, y_test2, ann_model4))
                             case 4:
-                                temp = ann(X_train2, y_train2, X_test2, y_test2, ann_model5)
-
-                        if temp < min_err:
-                            min_err = temp
-                            h = i+1
-
-                    ann_optimal_h.append(h)
-                    ann_val_err.append(min_err)
+                                ann5_val_err.append(ann(X_train2, y_train2, X_test2, y_test2, ann_model5))
 
                 case 1:
                     min_err = 100000
@@ -179,50 +180,99 @@ for (i, (train_index, test_index)) in enumerate(CV1.split(X,y)):
                         temp = 0
                         match i:
                             case 0:
-                                temp = reg(X_train1, y_train1, X_test1, y_test1, -2)
+                                reg1_val_err.appen(reg(X_train1, y_train1, X_test1, y_test1, -2))
                             case 1:
-                                temp = reg(X_train1, y_train1, X_test1, y_test1, -1)
+                                reg2_val_err.appen(reg(X_train1, y_train1, X_test1, y_test1, -1))
                             case 2:
-                                temp = reg(X_train1, y_train1, X_test1, y_test1, 0)
+                                reg3_val_err.appen(reg(X_train1, y_train1, X_test1, y_test1, 0))
                             case 3:
-                                temp = reg(X_train1, y_train1, X_test1, y_test1, 1)
+                                reg4_val_err.appen(reg(X_train1, y_train1, X_test1, y_test1, 1))
                             case 4:
-                                temp = reg(X_train1, y_train1, X_test1, y_test1, 2)
-
-                        if temp < min_err:
-                            min_err = temp
-                            lamb = i+1
-
-                    reg_optimal_lambda.append(lamb)
-                    reg_val_err.append(min_err)
+                                reg5_val_err.appen(reg(X_train1, y_train1, X_test1, y_test1, 2))
                     
                 case 2:
-                    y_train_mean = y_train2.mean()
-                    mse = np.mean(np.square(y_test2 - y_train_mean))
-                    baseline_errors.append(mse)
+                    pass
 
     #ann_gen_error = sum(len((X_test2[j])+len(y_test2[j]))/(len(X_train1[i])+len(y_train1[i]))*ann_errors for j in range(K2))
-    ann_gen_error = np.mean(ann_errors)
+    ann1_gen_error = np.mean(ann1_val_err)
+    ann2_gen_error = np.mean(ann2_val_err)
+    ann3_gen_error = np.mean(ann3_val_err)
+    ann4_gen_error = np.mean(ann4_val_err)
+    ann5_gen_error = np.mean(ann5_val_err)
+
     
     #reg_gen_error = sum(len((X_test2[j])+len(y_test2[j]))/(len(X_train1[i])+len(y_train1[i]))*reg_errors for j in range(K2))
-    reg_gen_error = np.mean(reg_errors)
+    reg1_gen_error = np.mean(reg1_val_err)
+    reg2_gen_error = np.mean(reg2_val_err)
+    reg3_gen_error = np.mean(reg3_val_err)
+    reg4_gen_error = np.mean(reg4_val_err)
+    reg5_gen_error = np.mean(reg5_val_err)
+
 
     #baseline_gen_error = sum(len((X_test2[j])+len(y_test2[j]))/(len(X_train1[i])+len(y_train1[i]))*baseline_errors for j in range(K2))
-    baseline_gen_error = np.mean(baseline_errors)
 
-    m_model = min(ann_gen_error, reg_gen_error, baseline_gen_error)
     
-    if m_model == ann_gen_error:
-        print("ANN")
-        best_test_error.append(ann(X_train1, y_train1, X_test1, y_test1, ann_model))
-    elif m_model == reg_gen_error:
-        print("reg")
-        best_test_error.append(reg(X_train1, y_train1, X_test1, y_test1, lambda1))
-    elif m_model == baseline_gen_error:
-        print("baseline")
-        y_train_mean = y_train1.mean()
-        mse = np.mean(np.square(y_test1 - y_train_mean))
-        best_test_error.append(mse)
-    else:
-        print("error")
 
+    ann_m_model = min(ann1_gen_error, ann2_gen_error, ann3_gen_error, ann4_gen_error, ann5_gen_error)
+
+    reg_m_model = min(reg1_gen_error, reg2_gen_error, reg3_gen_error, reg4_gen_error, reg5_gen_error)
+    
+    if ann_m_model == ann1_gen_error:
+        print("ann1")
+        ann_model1 = setupAnn(1)       
+        best_test_error = (ann(X_train1, y_train1, X_test1, y_test1, ann_model1))
+        print("best test error for i = " + i+1 + "is: " + best_test_error)
+    elif ann_m_model == ann2_gen_error:
+        print("ann2")
+        ann_model2 = setupAnn(2)
+        best_test_error = (ann(X_train1, y_train1, X_test1, y_test1, ann_model2))
+        print("best test error for i = " + i+1 + "is: " + best_test_error)
+        
+    elif ann_m_model == ann3_gen_error:
+        print("ann3")
+        ann_model3 = setupAnn(3)
+        best_test_error = (ann(X_train1, y_train1, X_test1, y_test1, ann_model3))
+        print("best test error for i = " + i+1 + "is: " + best_test_error)
+        
+    elif ann_m_model == ann4_gen_error:
+        print("ann4")
+        ann_model4 = setupAnn(4)
+        best_test_error = (ann(X_train1, y_train1, X_test1, y_test1, ann_model4))
+        print("best test error for i = " + i+1 + "is: " + best_test_error)
+        
+    elif ann_m_model == ann5_gen_error:
+        print("ann5")
+        ann_model5 = setupAnn(5)
+        best_test_error = (ann(X_train1, y_train1, X_test1, y_test1, ann_model5))
+        print("best test error for i = " + i+1 + "is: " + best_test_error)
+
+    
+    if reg_m_model == reg1_gen_error:
+        print("reg1")
+        best_test_error = (reg(X_train1, y_train1, X_test1, y_test1, -2))
+        print("best test error for i = " + i+1 + "is: " + best_test_error)
+    elif reg_m_model == reg2_gen_error:
+        print("reg2")
+        best_test_error = (reg(X_train1, y_train1, X_test1, y_test1, -1))
+        print("best test error for i = " + i+1 + "is: " + best_test_error)
+    elif reg_m_model == reg3_gen_error:
+        print("reg3")
+        best_test_error = (reg(X_train1, y_train1, X_test1, y_test1, 0))
+        print("best test error for i = " + i+1 + "is: " + best_test_error)
+    elif reg_m_model == reg4_gen_error:
+        print("reg4")
+        best_test_error = (reg(X_train1, y_train1, X_test1, y_test1, 1))
+        print("best test error for i = " + i+1 + "is: " + best_test_error)
+    elif reg_m_model == reg5_gen_error:
+        print("reg5")
+        best_test_error = (reg(X_train1, y_train1, X_test1, y_test1, 2))
+        print("best test error for i = " + i+1 + "is: " + best_test_error)
+    
+
+    print("baseline")
+    y_train_mean = y_train1.mean()
+    mse = np.mean(np.square(y_test1 - y_train_mean))
+    best_test_error = mse
+    print("best test error for i = " + i+1 + "is: " + best_test_error)
+
+    print("!!!! LOOP i: " + i+1 + "DONE !!!!")
