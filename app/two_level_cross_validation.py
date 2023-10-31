@@ -94,6 +94,13 @@ N, M = X.shape
 K1 = 5  # Number of outer cross-validation folds
 K2 = 5 # Number of inner cross-validation folds
 S = 3   # Number of different models
+
+ann_optimal_h = []
+ann_val_err = []
+
+reg_optimal_lambda = []
+reg_val_err = []
+
 ann_errors = []
 reg_errors = []
 baseline_errors = []
@@ -113,9 +120,7 @@ y_test2 = 0
 CV1 = model_selection.KFold(n_splits=K1, shuffle=True)
 
 for (i, (train_index, test_index)) in enumerate(CV1.split(X,y)):
-    hidden_units = i+1
     lambda1 = i-2
-    ann_model = setupAnn(hidden_units)
 
     X_train1 = X[train_index,:] # D_par
     y_train1 = y[train_index] # D_par
@@ -138,8 +143,36 @@ for (i, (train_index, test_index)) in enumerate(CV1.split(X,y)):
             # Save the performance metric
             # Repeat for all models
             match s:
-                case 0: 
-                    ann_errors.append(ann(X_train2, y_train2, X_test2, y_test2, ann_model))
+                case 0:
+                    ann_model1 = setupAnn(1)
+                    ann_model2 = setupAnn(2)
+                    ann_model3 = setupAnn(3)
+                    ann_model4 = setupAnn(4)
+                    ann_model5 = setupAnn(5)
+
+                    min_err = 100000
+                    h = 0
+                    for i in range(5):
+                        temp = 0
+                        match i:
+                            case 0:
+                                temp = ann(X_train2, y_train2, X_test2, y_test2, ann_model1)
+                            case 1:
+                                temp = ann(X_train2, y_train2, X_test2, y_test2, ann_model2)
+                            case 2:
+                                temp = ann(X_train2, y_train2, X_test2, y_test2, ann_model3)
+                            case 3:
+                                temp = ann(X_train2, y_train2, X_test2, y_test2, ann_model4)
+                            case 4:
+                                temp = ann(X_train2, y_train2, X_test2, y_test2, ann_model5)
+
+                        if temp < min_err:
+                            min_err = temp
+                            h = i+1
+
+                    ann_optimal_h.append(h)
+                    ann_val_err.append(min_err)
+                    
                 case 1:
                     reg_errors.append(reg(X_train2, y_train2, X_test2, y_test2, lambda1))
                     
@@ -149,13 +182,13 @@ for (i, (train_index, test_index)) in enumerate(CV1.split(X,y)):
                     baseline_errors.append(mse)
 
     #ann_gen_error = sum(len((X_test2[j])+len(y_test2[j]))/(len(X_train1[i])+len(y_train1[i]))*ann_errors for j in range(K2))
-    ann_gen_error = np.sqrt(np.mean(ann_errors))
+    ann_gen_error = np.mean(ann_errors)
     
     #reg_gen_error = sum(len((X_test2[j])+len(y_test2[j]))/(len(X_train1[i])+len(y_train1[i]))*reg_errors for j in range(K2))
-    reg_gen_error = np.sqrt(np.mean(reg_errors))
+    reg_gen_error = np.mean(reg_errors)
 
     #baseline_gen_error = sum(len((X_test2[j])+len(y_test2[j]))/(len(X_train1[i])+len(y_train1[i]))*baseline_errors for j in range(K2))
-    baseline_gen_error = np.sqrt(np.mean(baseline_errors))
+    baseline_gen_error = np.mean(baseline_errors)
 
     m_model = min(ann_gen_error, reg_gen_error, baseline_gen_error)
     
