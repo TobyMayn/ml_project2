@@ -1,5 +1,5 @@
 import matplotlib.pyplot as plt
-import numpy as np
+import numpy as np, scipy.stats as st
 import torch
 from helper.loadFile import *
 from scipy import stats
@@ -56,7 +56,7 @@ def reg(X_train, y_train, X_test, y_test, lambda1):
     lambdaI[0,0] = 0 # remove bias regularization
     w.append(np.linalg.solve(XtX+lambdaI,Xty).squeeze())
     # Evaluate training and test performance
-    return np.power(y_test-X_test @ w[0].T,2).mean(axis=0)
+    return np.power(y_test-X_test @ w[0].T,2).mean(axis=0), np.power(y_test-X_test @ w[0].T,2)
 
 def ann(x_train, y_train, x_test, y_test, model):
     n_replicates = 1        # number of networks trained in each k-fold
@@ -84,7 +84,7 @@ def ann(x_train, y_train, x_test, y_test, model):
     se = (y_test_est.float()-y_test.float())**2 # squared error
     mse = (sum(se).type(torch.float)/len(y_test)).data.numpy() #mean
 
-    return mse
+    return mse, se
 
 y = np.ndarray.transpose(np.asarray([[float(num) for num in doc.col_values(3, 1, 463)]]))
 
@@ -163,15 +163,20 @@ for (i, (train_index, test_index)) in enumerate(CV1.split(X,y)):
                         temp = 0
                         match i:
                             case 0:
-                                ann1_val_err.append(ann(X_train2, y_train2, X_test2, y_test2, ann_model1))
+                                mse, _ = ann(X_train2, y_train2, X_test2, y_test2, ann_model1)
+                                ann1_val_err.append(mse)
                             case 1:
-                                ann2_val_err.append(ann(X_train2, y_train2, X_test2, y_test2, ann_model2))
+                                mse, _ = ann(X_train2, y_train2, X_test2, y_test2, ann_model2)
+                                ann2_val_err.append(mse)
                             case 2:
-                                ann3_val_err.append(ann(X_train2, y_train2, X_test2, y_test2, ann_model3))
+                                mse, _ = ann(X_train2, y_train2, X_test2, y_test2, ann_model3)
+                                ann3_val_err.append(mse)
                             case 3:
-                                ann4_val_err.append(ann(X_train2, y_train2, X_test2, y_test2, ann_model4))
+                                mse, _ = ann(X_train2, y_train2, X_test2, y_test2, ann_model4)
+                                ann4_val_err.append(mse)
                             case 4:
-                                ann5_val_err.append(ann(X_train2, y_train2, X_test2, y_test2, ann_model5))
+                                mse, _ = ann(X_train2, y_train2, X_test2, y_test2, ann_model5)
+                                ann5_val_err.append(mse)
 
                 case 1:
                     min_err = 100000
@@ -180,16 +185,21 @@ for (i, (train_index, test_index)) in enumerate(CV1.split(X,y)):
                         temp = 0
                         match i:
                             case 0:
-                                reg1_val_err.append(reg(X_train1, y_train1, X_test1, y_test1, -2))
+                                mse, _ = reg(X_train1, y_train1, X_test1, y_test1, -2)
+                                reg1_val_err.append(mse)
                             case 1:
-                                reg2_val_err.append(reg(X_train1, y_train1, X_test1, y_test1, -1))
+                                mse, _ = reg(X_train1, y_train1, X_test1, y_test1, -1)
+                                reg2_val_err.append(mse)
                             case 2:
-                                reg3_val_err.append(reg(X_train1, y_train1, X_test1, y_test1, 0))
+                                mse, _ = reg(X_train1, y_train1, X_test1, y_test1, 0)
+                                reg3_val_err.append(mse)                            
                             case 3:
-                                reg4_val_err.append(reg(X_train1, y_train1, X_test1, y_test1, 1))
+                                mse, _ = reg(X_train1, y_train1, X_test1, y_test1, 1)
+
+                                reg4_val_err.append(mse)                            
                             case 4:
-                                reg5_val_err.append(reg(X_train1, y_train1, X_test1, y_test1, 2))
-                    
+                                mse, _ = reg(X_train1, y_train1, X_test1, y_test1, 2)
+                                reg5_val_err.append(mse)                    
                 case 2:
                     pass
 
@@ -220,30 +230,30 @@ for (i, (train_index, test_index)) in enumerate(CV1.split(X,y)):
     if ann_m_model == ann1_gen_error:
         print("ann1")
         ann_model1 = setupAnn(1)       
-        best_test_error = (ann(X_train1, y_train1, X_test1, y_test1, ann_model1))
+        best_test_error, _ = (ann(X_train1, y_train1, X_test1, y_test1, ann_model1))
         print("best test error for i = " + str(i+1) + "is: " + str(best_test_error))
     elif ann_m_model == ann2_gen_error:
         print("ann2")
         ann_model2 = setupAnn(2)
-        best_test_error = (ann(X_train1, y_train1, X_test1, y_test1, ann_model2))
+        best_test_error, _ = (ann(X_train1, y_train1, X_test1, y_test1, ann_model2))
         print("best test error for i = " + str(i+1) + "is: " + str(best_test_error))
         
     elif ann_m_model == ann3_gen_error:
         print("ann3")
         ann_model3 = setupAnn(3)
-        best_test_error = (ann(X_train1, y_train1, X_test1, y_test1, ann_model3))
+        best_test_error, _ = (ann(X_train1, y_train1, X_test1, y_test1, ann_model3))
         print("best test error for i = " + str(i+1) + "is: " + str(best_test_error))
         
     elif ann_m_model == ann4_gen_error:
         print("ann4")
         ann_model4 = setupAnn(4)
-        best_test_error = (ann(X_train1, y_train1, X_test1, y_test1, ann_model4))
+        best_test_error, _ = (ann(X_train1, y_train1, X_test1, y_test1, ann_model4))
         print("best test error for i = " + str(i+1) + "is: " + str(best_test_error))
         
     elif ann_m_model == ann5_gen_error:
         print("ann5")
         ann_model5 = setupAnn(5)
-        best_test_error = (ann(X_train1, y_train1, X_test1, y_test1, ann_model5))
+        best_test_error, _ = (ann(X_train1, y_train1, X_test1, y_test1, ann_model5))
         print("best test error for i = " + str(i+1) + "is: " + str(best_test_error))
 
     
@@ -276,3 +286,42 @@ for (i, (train_index, test_index)) in enumerate(CV1.split(X,y)):
     print("best test error for i = " + str(i + 1) + "is: " + str(best_test_error))
 
     print("!!!! LOOP i: " + str(i+1) + "DONE !!!!")
+
+
+# Statistical analysis of the different models Regression part B, 3
+
+X_train, X_test, y_train, y_test = model_selection.train_test_split(X, y, test_size=0.2)
+
+ann_test = setupAnn(4)
+
+_, zAnnA = (ann(X_train, y_train, X_test, y_test, ann_test))
+
+_, zRegA = reg(X_train, y_train, X_test, y_test, 4)
+
+y_train_mean = y_train.mean()
+zBaseA = np.square(y_test - y_train_mean)
+
+alpha = 0.05
+
+
+# Compute confidence interval of z = zA-zB and p-value of Null hypothesis
+zAnnReg = zAnnA - zRegA
+
+zAnnBase = zAnnA - zBaseA
+
+zRegBase = zRegA - zBaseA
+
+CI_AR = st.t.interval(1-alpha, len(zAnnReg)-1, loc=np.mean(zAnnReg), scale=st.sem(zAnnReg))  # Confidence interval
+p_AR = 2*st.t.cdf( -np.abs( np.mean(zAnnReg) )/st.sem(zAnnReg), df=len(zAnnReg)-1)  # p-value
+
+CI_AB = st.t.interval(1-alpha, len(zAnnBase)-1, loc=np.mean(zAnnBase), scale=st.sem(zAnnBase))  # Confidence interval
+p_AB = 2*st.t.cdf( -np.abs( np.mean(zAnnBase) )/st.sem(zAnnBase), df=len(zAnnBase)-1)  # p-value
+
+CI_RB = st.t.interval(1-alpha, len(zRegBase)-1, loc=np.mean(zRegBase), scale=st.sem(zRegBase))  # Confidence interval
+p_RB = 2*st.t.cdf( -np.abs( np.mean(zRegBase) )/st.sem(zRegBase), df=len(zRegBase)-1)  # p-value
+
+
+
+
+
+
