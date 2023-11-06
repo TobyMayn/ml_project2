@@ -320,6 +320,9 @@ p_AB = 2*st.t.cdf( -np.abs( np.mean(zAnnBase) )/st.sem(zAnnBase), df=len(zAnnBas
 CI_RB = st.t.interval(1-alpha, len(zRegBase)-1, loc=np.mean(zRegBase), scale=st.sem(zRegBase))  # Confidence interval
 p_RB = 2*st.t.cdf( -np.abs( np.mean(zRegBase) )/st.sem(zRegBase), df=len(zRegBase)-1)  # p-value
 
+print("CI_AR = " + str(CI_AR) + "p-value= " + str(p_AR))
+print("CI_AB = " + str(CI_AB) + "p-value= " + str(p_AB))
+print("CI_RB = " + str(CI_RB) + "p-value= " + str(p_RB))
 
 
 
