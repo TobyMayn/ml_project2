@@ -10,7 +10,7 @@ font_size = 15
 plt.rcParams.update({'font.size': font_size})
 
 # Load Matlab data file and extract variables of interest
-y = np.asarray([float(num) for num in doc.col_values(3, 1, 463)])
+y = np.asarray([float(num) for num in doc.col_values(10, 1, 463)])
 # Pull chosen attributes from dataset
 new_X = old_X[:, [1, 2, 3]]
 N, M = X.shape
