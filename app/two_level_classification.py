@@ -5,6 +5,7 @@ from helper.loadFile import *
 from scipy import stats
 from scipy.io import loadmat
 from sklearn import model_selection
+from sklearn.linear_model import lm
 from toolbox_02450 import draw_neural_net, train_neural_net
 
 def setupAnn(hidden_units):
@@ -20,7 +21,8 @@ def setupAnn(hidden_units):
     return model
 
 def reg(X_train, y_train, X_test, y_test, lambda1):
-    M1 = M + 1
+    model = lm.LogisticRegression()
+    model.fit(X_train, y_train)
     
     X_train = X_train
     
@@ -94,9 +96,8 @@ def ann(x_train, y_train, x_test, y_test, model):
     return error_rate
 # Pull CHD column from dataset
 y = np.ndarray.transpose(np.asarray([[int(num) for num in doc.col_values(10, 1, 463)]]))
-print(y)
 # Pull chosen attributes from dataset
-new_X = old_X[:, [1,2,3]]
+new_X = old_X[:, [0,1,2]]
 N, M = X.shape
 
 # Define K1, K2, and S
