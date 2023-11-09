@@ -34,31 +34,32 @@ def reg(X_train, y_train, X_test, y_test, lambda1):
 
     y_test = y_test.tolist()
     y_test = list(map(lambda x: x[0], y_test))
-    y_test = np.array(y_test)
-
-    X_train = np.concatenate((np.ones((X_train.shape[0],1)),X_train),1)
-    X_test = np.concatenate((np.ones((X_test.shape[0],1)),X_test),1)    
+    y_test = np.array(y_test)   
 
     
     w = []
 
     # Standardize the training and set set based on training set moments
-    mu = np.mean(X_train[:, 1:], 0)
-    sigma = np.std(X_train[:, 1:], 0)
+    mu = np.mean(X_train, 0)
+    sigma = np.std(X_train, 0)
+
+    X_train = (X_train - mu) / sigma
+    X_test = (X_test - mu) / sigma
+
+    mdl = LogisticRegression(penalty='l2', C=1/lambda1)
+
+    mdl.fit(X_train, y_train)
+
+    y_train_est = mdl.predict(X_train).T
+    y_test_est = mdl.predict(X_test).T
+
+    train_error_rate = np.sum(y_train_est != y_train) / len(y_train)
+    test_error_rate = np.sum(y_test_est != y_test) / len(y_test)
+
+    #w_est = mdl.coef_[0]
+    #coefficient_norm = np.sqrt(np.sum(w_est**2))
     
-    X_train[:, 1:] = (X_train[:, 1:] - mu) / sigma
-    X_test[:, 1:] = (X_test[:, 1:] - mu) / sigma
-    
-    # precompute terms
-    Xty = X_train.T @ y_train
-    XtX = X_train.T @ X_train
-    # Compute parameters for current value of lambda and current CV fold
-    # note: "linalg.lstsq(a,b)" is substitue for Matlab's left division operator "\"
-    lambdaI = np.power(10., lambda1) * np.eye(M1)
-    lambdaI[0,0] = 0 # remove bias regularization
-    w.append(np.linalg.solve(XtX+lambdaI,Xty).squeeze())
-    # Evaluate training and test performance
-    return np.power(y_test-X_test @ w[0].T,2).mean(axis=0), np.power(y_test-X_test @ w[0].T,2)
+    return test_error_rate
 
 def ann(x_train, y_train, x_test, y_test, model):
     n_replicates = 1        # number of networks trained in each k-fold
@@ -67,10 +68,10 @@ def ann(x_train, y_train, x_test, y_test, model):
     loss_fn = torch.nn.BCELoss() # notice how this is now a mean-squared-error loss
 
     # Extract training and test set for current CV fold, convert to tensors
-    X_train = torch.Tensor(X[train_index, :])
-    y_train = torch.Tensor(y[train_index])
-    X_test = torch.Tensor(X[test_index, :])
-    y_test = torch.Tensor(y[test_index])
+    X_train = torch.Tensor(x_train)
+    y_train = torch.Tensor(y_train)
+    X_test = torch.Tensor(x_test)
+    y_test = torch.Tensor(y_test)
 
     # Train the net on training data
     net, final_loss, learning_curve = train_neural_net(model,
@@ -94,11 +95,22 @@ def ann(x_train, y_train, x_test, y_test, model):
 
 
     return error_rate
+
+def baseline_seperator(y_test, y_train_mean):
+    y_predict = []
+    if y_train_mean > 0.5:
+        for x in y_test:
+            y_predict.append(1)
+    else:
+        for x in y_test:
+            y_predict.append(0)
+
+    return np.asarray(y_predict)
 # Pull CHD column from dataset
 y = np.ndarray.transpose(np.asarray([[int(num) for num in doc.col_values(10, 1, 463)]]))
 # Pull chosen attributes from dataset
 new_X = old_X[:, [0,1,2]]
-N, M = X.shape
+N, M = new_X.shape
 
 # Define K1, K2, and S
 K1 = 5  # Number of outer cross-validation folds
@@ -189,28 +201,26 @@ for (i, (train_index, test_index)) in enumerate(CV1.split(X,y)):
                                 ann5_val_err.append(error_rate)
 
                 case 1:
-                    pass
                     min_err = 100000
                     lamb = 0
                     for i in range(5):
                         temp = 0
                         match i:
                             case 0:
-                                mse, _ = reg(X_train1, y_train1, X_test1, y_test1, -2)
-                                reg1_val_err.append(mse)
+                                error_rate = reg(X_train1, y_train1, X_test1, y_test1, -2)
+                                reg1_val_err.append(error_rate)
                             case 1:
-                                mse, _ = reg(X_train1, y_train1, X_test1, y_test1, -1)
-                                reg2_val_err.append(mse)
+                                error_rate = reg(X_train1, y_train1, X_test1, y_test1, -1)
+                                reg2_val_err.append(error_rate)
                             case 2:
-                                mse, _ = reg(X_train1, y_train1, X_test1, y_test1, 0)
-                                reg3_val_err.append(mse)                            
+                                error_rate = reg(X_train1, y_train1, X_test1, y_test1, 0)
+                                reg3_val_err.append(error_rate)                            
                             case 3:
-                                mse, _ = reg(X_train1, y_train1, X_test1, y_test1, 1)
-
-                                reg4_val_err.append(mse)                            
+                                error_rate = reg(X_train1, y_train1, X_test1, y_test1, 1)
+                                reg4_val_err.append(error_rate)                            
                             case 4:
-                                mse, _ = reg(X_train1, y_train1, X_test1, y_test1, 2)
-                                reg5_val_err.append(mse)                    
+                                error_rate = reg(X_train1, y_train1, X_test1, y_test1, 2)
+                                reg5_val_err.append(error_rate)                    
                 case 2:
                     pass
 
@@ -267,34 +277,35 @@ for (i, (train_index, test_index)) in enumerate(CV1.split(X,y)):
         best_error_rate = (ann(X_train1, y_train1, X_test1, y_test1, ann_model5))
         print("best test error for i = " + str(i+1) + "is: " + str(best_error_rate))
 
-    """
+    
     if reg_m_model == reg1_gen_error:
         print("reg1")
-        best_test_error = (reg(X_train1, y_train1, X_test1, y_test1, -2))
-        print("best test error for i = " + str(i+1) + "is: " + str(best_test_error))
+        best_error_rate = (reg(X_train1, y_train1, X_test1, y_test1, -2))
+        print("best test error for i = " + str(i+1) + "is: " + str(best_error_rate))
     elif reg_m_model == reg2_gen_error:
         print("reg2")
-        best_test_error = (reg(X_train1, y_train1, X_test1, y_test1, -1))
-        print("best test error for i = " + str(i+1) + "is: " + str(best_test_error))
+        best_error_rate = (reg(X_train1, y_train1, X_test1, y_test1, -1))
+        print("best test error for i = " + str(i+1) + "is: " + str(best_error_rate))
     elif reg_m_model == reg3_gen_error:
         print("reg3")
-        best_test_error = (reg(X_train1, y_train1, X_test1, y_test1, 0))
-        print("best test error for i = " + str(i+1) + "is: " + str(best_test_error))
+        best_error_rate = (reg(X_train1, y_train1, X_test1, y_test1, 0))
+        print("best test error for i = " + str(i+1) + "is: " + str(best_error_rate))
     elif reg_m_model == reg4_gen_error:
         print("reg4")
-        best_test_error = (reg(X_train1, y_train1, X_test1, y_test1, 1))
-        print("best test error for i = " + str(i+1) + "is: " + str(best_test_error))
+        best_error_rate = (reg(X_train1, y_train1, X_test1, y_test1, 1))
+        print("best test error for i = " + str(i+1) + "is: " + str(best_error_rate))
     elif reg_m_model == reg5_gen_error:
         print("reg5")
-        best_test_error = (reg(X_train1, y_train1, X_test1, y_test1, 2))
-        print("best test error for i = " + str(i+1) + "is: " + str(best_test_error))
-    """
+        best_error_rate = (reg(X_train1, y_train1, X_test1, y_test1, 2))
+        print("best test error for i = " + str(i+1) + "is: " + str(best_error_rate))
+    
 
     print("baseline")
-    y_train_mean = y_train1.mean()
-    mse = np.mean(np.square(y_test1 - y_train_mean))
-    best_test_error = mse
-    print("best test error for i = " + str(i + 1) + "is: " + str(best_test_error))
+    y_train_mean = np.mean(y_train1, 0)
+    y_predict = baseline_seperator(y_test1, y_train_mean)
+    
+    best_error_rate = np.sum(y_predict != y_test1) / len(y_test1)
+    print("best test error for i = " + str(i + 1) + "is: " + str(best_error_rate))
 
     print("!!!! LOOP i: " + str(i+1) + "DONE !!!!")
 
