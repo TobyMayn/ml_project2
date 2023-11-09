@@ -46,7 +46,7 @@ def reg(X_train, y_train, X_test, y_test, lambda1):
     X_train = (X_train - mu) / sigma
     X_test = (X_test - mu) / sigma
 
-    mdl = LogisticRegression(penalty='l2', C=1/lambda1)
+    mdl = LogisticRegression(penalty='l2', C=1/np.power(10., lambda1))
 
     mdl.fit(X_train, y_train)
 
@@ -106,6 +106,7 @@ def baseline_seperator(y_test, y_train_mean):
             y_predict.append(0)
 
     return np.asarray(y_predict)
+
 # Pull CHD column from dataset
 y = np.ndarray.transpose(np.asarray([[int(num) for num in doc.col_values(10, 1, 463)]]))
 # Pull chosen attributes from dataset
