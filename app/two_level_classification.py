@@ -79,7 +79,7 @@ def ann(x_train, y_train, x_test, y_test, model):
     
     # Determine estimated class labels for test set
     y_sigmoid = net(X_test)
-    y_test_est = net(y_sigmoid>0.5).type(dtype=torch.uint8)
+    y_test_est = net(y_sigmoid>0.5).type(dtype=torch.float64)
     
     e = y_test_est != y_test
     error_rate = (sum(e).type(torch.float)/len(y_test)).data.numpy()
@@ -89,9 +89,10 @@ def ann(x_train, y_train, x_test, y_test, model):
     #mse = (sum(se).type(torch.float)/len(y_test)).data.numpy() #mean
 
     return error_rate
-
+# Pull CHD column from dataset
 y = np.ndarray.transpose(np.asarray([[float(num) for num in doc.col_values(10, 1, 463)]]))
 print(y)
+# Pull chosen attributes from dataset
 new_X = old_X[:, [1,2,3]]
 N, M = X.shape
 
