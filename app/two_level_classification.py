@@ -92,9 +92,10 @@ def ann(x_train, y_train, x_test, y_test, model):
 
 
     return error_rate
-
-y = np.ndarray.transpose(np.asarray([[float(num) for num in doc.col_values(10, 1, 463)]]))
+# Pull CHD column from dataset
+y = np.ndarray.transpose(np.asarray([[int(num) for num in doc.col_values(10, 1, 463)]]))
 print(y)
+# Pull chosen attributes from dataset
 new_X = old_X[:, [1,2,3]]
 N, M = X.shape
 
