@@ -64,10 +64,11 @@ def ann(x_train, y_train, x_test, y_test, model):
 
     loss_fn = torch.nn.BCELoss() # notice how this is now a mean-squared-error loss
 
-    X_train = torch.Tensor(x_train)
-    y_train = torch.Tensor(y_train)
-    X_test = torch.Tensor(x_test)
-    y_test = torch.Tensor(y_test)
+    # Extract training and test set for current CV fold, convert to tensors
+    X_train = torch.Tensor(X[train_index, :])
+    y_train = torch.Tensor(y[train_index])
+    X_test = torch.Tensor(X[test_index, :])
+    y_test = torch.Tensor(y[test_index])
 
     # Train the net on training data
     net, final_loss, learning_curve = train_neural_net(model,
@@ -76,17 +77,19 @@ def ann(x_train, y_train, x_test, y_test, model):
                                                        y=y_train,
                                                        n_replicates=n_replicates,
                                                        max_iter=max_iter)
-    
+
+    print('\n\tBest loss: {}\n'.format(final_loss))
+
     # Determine estimated class labels for test set
     y_sigmoid = net(X_test)
-    y_test_est = net(y_sigmoid>0.5).type(dtype=torch.uint8)
-    
-    e = y_test_est != y_test
-    error_rate = (sum(e).type(torch.float)/len(y_test)).data.numpy()
-    
+    y_test_est = (y_sigmoid > .5).type(dtype=torch.uint8)
+
     # Determine errors and errors
-    #se = (y_test_est.float()-y_test.float())**2 # squared error
-    #mse = (sum(se).type(torch.float)/len(y_test)).data.numpy() #mean
+    y_test = y_test.type(dtype=torch.uint8)
+
+    e = y_test_est != y_test
+    error_rate = (sum(e).type(torch.float) / len(y_test)).data.numpy()
+
 
     return error_rate
 
