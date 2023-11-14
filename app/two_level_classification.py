@@ -86,7 +86,7 @@ def ann(x_train, y_train, x_test, y_test, model):
 
     # Determine estimated class labels for test set
     y_sigmoid = net(X_test)
-    y_test_est = (y_sigmoid>.5).type(dtype=torch.uint8)
+    y_test_est = (y_sigmoid > .5).type(dtype=torch.uint8)
 
     # Determine errors and errors
     y_test = y_test.type(dtype=torch.uint8)
@@ -318,7 +318,7 @@ X_train, X_test, y_train, y_test = model_selection.train_test_split(new_X, y, te
 
 ann_test = setupAnn(4)
 
-_, yhat_ann = (ann(X_train, y_train, X_test, y_test, ann_test))
+_, yhat_ann = ann(X_train, y_train, X_test, y_test, ann_test)
 
 _, yhat_reg = reg(X_train, y_train, X_test, y_test, 4)
 
@@ -328,17 +328,13 @@ y_true = y_test
 
 alpha = 0.05
 
-yhat_ann = yhat_ann.numpy()
-yhat_reg = np.ndarray.transpose(np.asarray([yhat_reg]))
+[thetahat_ann_reg, CI_ANN_REG, p_ann_reg] = mcnemar(y_true, yhat_ann[:], yhat_reg[:], alpha=alpha)
+[thetahat_reg_base, CI_REG_BASE, p_reg_base] = mcnemar(y_true, yhat_reg[:], yhat_base[:], alpha=alpha)
+[thetahat_ann_base, CI_ANN_BASE, p_ann_base] = mcnemar(y_true, yhat_ann[:], yhat_base[:], alpha=alpha)
 
-[thetahat_ann_reg, CI_ANN_REG, p_ann_reg] = mcnemar(y_true, yhat_ann, yhat_reg, alpha=alpha)
-[thetahat_reg_base, CI_REG_BASE, p_reg_base] = mcnemar(y_true, yhat_reg, yhat_base, alpha=alpha)
-[thetahat_ann_base, CI_ANN_BASE, p_ann_base] = mcnemar(y_true, yhat_ann, yhat_base, alpha=alpha)
-
-
-print("theta = theta_A-theta_B point estimate", thetahat_ann_reg, " CI: ", CI_ANN_REG, "p-value", p_ann_reg)
-print("theta = theta_A-theta_B point estimate", thetahat_reg_base, " CI: ", CI_REG_BASE, "p-value", p_reg_base)
-print("theta = theta_A-theta_B point estimate", thetahat_ann_base, " CI: ", CI_ANN_BASE, "p-value", p_ann_base)
+print("theta_ann_reg = theta_A-theta_B point estimate", thetahat_ann_reg, " CI: ", CI_ANN_REG, "p-value", p_ann_reg)
+print("theta_reg_base = theta_A-theta_B point estimate", thetahat_reg_base, " CI: ", CI_REG_BASE, "p-value", p_reg_base)
+print("theta_ann_base = theta_A-theta_B point estimate", thetahat_ann_base, " CI: ", CI_ANN_BASE, "p-value", p_ann_base)
 
 
 
