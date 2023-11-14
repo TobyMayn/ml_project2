@@ -60,7 +60,7 @@ def reg(X_train, y_train, X_test, y_test, lambda1):
     #w_est = mdl.coef_[0]
     #coefficient_norm = np.sqrt(np.sum(w_est**2))
     
-    return test_error_rate
+    return test_error_rate, y_test_est
 
 def ann(x_train, y_train, x_test, y_test, model):
     n_replicates = 1        # number of networks trained in each k-fold
@@ -95,7 +95,7 @@ def ann(x_train, y_train, x_test, y_test, model):
     error_rate = (sum(e).type(torch.float) / len(y_test)).data.numpy()
 
 
-    return error_rate
+    return error_rate, y_test_est
 
 def baseline_seperator(y_test, y_train_mean):
     y_predict = []
@@ -313,41 +313,28 @@ for (i, (train_index, test_index)) in enumerate(CV1.split(X,y)):
 
 
 # Statistical analysis of the different models Regression part B, 3
-"""
-X_train, X_test, y_train, y_test = model_selection.train_test_split(X, y, test_size=0.2)
+
+X_train, X_test, y_train, y_test = model_selection.train_test_split(new_X, y, test_size=0.2)
 
 ann_test = setupAnn(4)
 
-_, zAnnA = (ann(X_train, y_train, X_test, y_test, ann_test))
+_, yhat_ann = (ann(X_train, y_train, X_test, y_test, ann_test))
 
-_, zRegA = reg(X_train, y_train, X_test, y_test, 4)
+_, yhat_reg = reg(X_train, y_train, X_test, y_test, 4)
 
-y_train_mean = y_train.mean()
-zBaseA = np.square(y_test - y_train_mean)
+yhat_base = baseline_seperator(y_test, np.mean(y_train, 0))
+
+y_true = y_test
 
 alpha = 0.05
 
+[thetahat_ann, CI_ANN, p_ann] = mcnemar(y_true, yhat_ann[:,0], yhat_ann[:,1], alpha=alpha)
+[thetahat_reg, CI_REG, p_reg] = mcnemar(y_true, yhat_reg[:,0], yhat_reg[:,1], alpha=alpha)
+[thetahat_base, CI_BASE, p_base] = mcnemar(y_true, yhat_base[:,0], yhat_base[:,1], alpha=alpha)
 
-# Compute confidence interval of z = zA-zB and p-value of Null hypothesis
-zAnnReg = zAnnA - zRegA
-
-zAnnBase = zAnnA - zBaseA
-
-zRegBase = zRegA - zBaseA
-
-CI_AR = st.t.interval(1-alpha, len(zAnnReg)-1, loc=np.mean(zAnnReg), scale=st.sem(zAnnReg))  # Confidence interval
-p_AR = 2*st.t.cdf( -np.abs( np.mean(zAnnReg) )/st.sem(zAnnReg), df=len(zAnnReg)-1)  # p-value
-
-CI_AB = st.t.interval(1-alpha, len(zAnnBase)-1, loc=np.mean(zAnnBase), scale=st.sem(zAnnBase))  # Confidence interval
-p_AB = 2*st.t.cdf( -np.abs( np.mean(zAnnBase) )/st.sem(zAnnBase), df=len(zAnnBase)-1)  # p-value
-
-CI_RB = st.t.interval(1-alpha, len(zRegBase)-1, loc=np.mean(zRegBase), scale=st.sem(zRegBase))  # Confidence interval
-p_RB = 2*st.t.cdf( -np.abs( np.mean(zRegBase) )/st.sem(zRegBase), df=len(zRegBase)-1)  # p-value
-
-print("CI_AR = " + str(CI_AR) + "p-value= " + str(p_AR))
-print("CI_AB = " + str(CI_AB) + "p-value= " + str(p_AB))
-print("CI_RB = " + str(CI_RB) + "p-value= " + str(p_RB))
-"""
+print("theta = theta_A-theta_B point estimate", thetahat_ann, " CI: ", CI_ANN, "p-value", p_ann)
+print("theta = theta_A-theta_B point estimate", thetahat_reg, " CI: ", CI_REG, "p-value", p_reg)
+print("theta = theta_A-theta_B point estimate", thetahat_base, " CI: ", CI_BASE, "p-value", p_base)
 
 
 
