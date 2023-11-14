@@ -5,7 +5,7 @@ from helper.loadFile import *
 from scipy import stats
 from scipy.io import loadmat
 from sklearn import model_selection
-from sklearn.linear_model import lm
+from sklearn.linear_model import LogisticRegression
 from toolbox_02450 import draw_neural_net, train_neural_net
 
 def setupAnn(hidden_units):
@@ -21,7 +21,7 @@ def setupAnn(hidden_units):
     return model
 
 def reg(X_train, y_train, X_test, y_test, lambda1):
-    model = lm.LogisticRegression()
+    model = LogisticRegression()
     model.fit(X_train, y_train)
     
     X_train = X_train
@@ -68,10 +68,10 @@ def ann(x_train, y_train, x_test, y_test, model):
     loss_fn = torch.nn.BCELoss() # notice how this is now a mean-squared-error loss
 
     # Extract training and test set for current CV fold, convert to tensors
-    X_train = torch.Tensor(x_train)
-    y_train = torch.Tensor(y_train)
-    X_test = torch.Tensor(x_test)
-    y_test = torch.Tensor(y_test)
+    X_train = torch.Tensor(new_X[train_index,:])
+    y_train = torch.Tensor(y[train_index])
+    X_test = torch.Tensor(new_X[test_index,:])
+    y_test = torch.Tensor(y[test_index])
 
     # Train the net on training data
     net, final_loss, learning_curve = train_neural_net(model,
