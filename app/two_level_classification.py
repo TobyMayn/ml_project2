@@ -328,6 +328,9 @@ y_true = y_test
 
 alpha = 0.05
 
+yhat_ann = yhat_ann.numpy()
+yhat_reg = np.ndarray.transpose(np.asarray([yhat_reg]))
+
 [thetahat_ann_reg, CI_ANN_REG, p_ann_reg] = mcnemar(y_true, yhat_ann[:], yhat_reg[:], alpha=alpha)
 [thetahat_reg_base, CI_REG_BASE, p_reg_base] = mcnemar(y_true, yhat_reg[:], yhat_base[:], alpha=alpha)
 [thetahat_ann_base, CI_ANN_BASE, p_ann_base] = mcnemar(y_true, yhat_ann[:], yhat_base[:], alpha=alpha)
