@@ -86,7 +86,7 @@ def ann(x_train, y_train, x_test, y_test, model):
 
     # Determine estimated class labels for test set
     y_sigmoid = net(X_test)
-    y_test_est = (y_sigmoid > .5).type(dtype=torch.uint8)
+    y_test_est = (y_sigmoid>.5).type(dtype=torch.uint8)
 
     # Determine errors and errors
     y_test = y_test.type(dtype=torch.uint8)
@@ -115,8 +115,8 @@ new_X = old_X[:, [0,1,2]]
 N, M = new_X.shape
 
 # Define K1, K2, and S
-K1 = 5  # Number of outer cross-validation folds
-K2 = 5 # Number of inner cross-validation folds
+K1 = 2  # Number of outer cross-validation folds
+K2 = 2 # Number of inner cross-validation folds
 S = 3   # Number of different models
 
 
@@ -328,9 +328,13 @@ y_true = y_test
 
 alpha = 0.05
 
-[thetahat_ann_reg, CI_ANN_REG, p_ann_reg] = mcnemar(y_true, yhat_ann[:], yhat_reg[:], alpha=alpha)
-[thetahat_reg_base, CI_REG_BASE, p_reg_base] = mcnemar(y_true, yhat_reg[:], yhat_base[:], alpha=alpha)
-[thetahat_ann_base, CI_ANN_BASE, p_ann_base] = mcnemar(y_true, yhat_ann[:], yhat_base[:], alpha=alpha)
+yhat_ann = yhat_ann.numpy()
+yhat_reg = np.ndarray.transpose(np.asarray([yhat_reg]))
+
+[thetahat_ann_reg, CI_ANN_REG, p_ann_reg] = mcnemar(y_true, yhat_ann, yhat_reg, alpha=alpha)
+[thetahat_reg_base, CI_REG_BASE, p_reg_base] = mcnemar(y_true, yhat_reg, yhat_base, alpha=alpha)
+[thetahat_ann_base, CI_ANN_BASE, p_ann_base] = mcnemar(y_true, yhat_ann, yhat_base, alpha=alpha)
+
 
 print("theta = theta_A-theta_B point estimate", thetahat_ann_reg, " CI: ", CI_ANN_REG, "p-value", p_ann_reg)
 print("theta = theta_A-theta_B point estimate", thetahat_reg_base, " CI: ", CI_REG_BASE, "p-value", p_reg_base)
