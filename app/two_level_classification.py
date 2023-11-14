@@ -21,8 +21,7 @@ def setupAnn(hidden_units):
     return model
 
 def reg(X_train, y_train, X_test, y_test, lambda1):
-    model = LogisticRegression()
-    model.fit(X_train, y_train)
+    
     
     X_train = X_train
     
@@ -34,8 +33,10 @@ def reg(X_train, y_train, X_test, y_test, lambda1):
 
     y_test = y_test.tolist()
     y_test = list(map(lambda x: x[0], y_test))
-    y_test = np.array(y_test)   
-
+    y_test = np.array(y_test) 
+    
+    model = LogisticRegression()
+    model.fit(X_train, y_train)
     
     w = []
 
