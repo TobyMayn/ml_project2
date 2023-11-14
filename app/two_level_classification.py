@@ -253,52 +253,52 @@ for (i, (train_index, test_index)) in enumerate(CV1.split(X,y)):
     if ann_m_model == ann1_gen_error:
         print("ann1")
         ann_model1 = setupAnn(1)       
-        best_error_rate = (ann(X_train1, y_train1, X_test1, y_test1, ann_model1))
+        best_error_rate, _ = (ann(X_train1, y_train1, X_test1, y_test1, ann_model1))
         print("best test error for i = " + str(i+1) + "is: " + str(best_error_rate))
     elif ann_m_model == ann2_gen_error:
         print("ann2")
         ann_model2 = setupAnn(2)
-        best_error_rate = (ann(X_train1, y_train1, X_test1, y_test1, ann_model2))
+        best_error_rate, _ = (ann(X_train1, y_train1, X_test1, y_test1, ann_model2))
         print("best test error for i = " + str(i+1) + "is: " + str(best_error_rate))
         
     elif ann_m_model == ann3_gen_error:
         print("ann3")
         ann_model3 = setupAnn(3)
-        best_error_rate = (ann(X_train1, y_train1, X_test1, y_test1, ann_model3))
+        best_error_rate, _ = (ann(X_train1, y_train1, X_test1, y_test1, ann_model3))
         print("best test error for i = " + str(i+1) + "is: " + str(best_error_rate))
         
     elif ann_m_model == ann4_gen_error:
         print("ann4")
         ann_model4 = setupAnn(4)
-        best_error_rate = (ann(X_train1, y_train1, X_test1, y_test1, ann_model4))
+        best_error_rate, _ = (ann(X_train1, y_train1, X_test1, y_test1, ann_model4))
         print("best test error for i = " + str(i+1) + "is: " + str(best_error_rate))
         
     elif ann_m_model == ann5_gen_error:
         print("ann5")
         ann_model5 = setupAnn(5)
-        best_error_rate = (ann(X_train1, y_train1, X_test1, y_test1, ann_model5))
+        best_error_rate, _ = (ann(X_train1, y_train1, X_test1, y_test1, ann_model5))
         print("best test error for i = " + str(i+1) + "is: " + str(best_error_rate))
 
     
     if reg_m_model == reg1_gen_error:
         print("reg1")
-        best_error_rate = (reg(X_train1, y_train1, X_test1, y_test1, -2))
+        best_error_rate, _ = (reg(X_train1, y_train1, X_test1, y_test1, -2))
         print("best test error for i = " + str(i+1) + "is: " + str(best_error_rate))
     elif reg_m_model == reg2_gen_error:
         print("reg2")
-        best_error_rate = (reg(X_train1, y_train1, X_test1, y_test1, -1))
+        best_error_rate, _ = (reg(X_train1, y_train1, X_test1, y_test1, -1))
         print("best test error for i = " + str(i+1) + "is: " + str(best_error_rate))
     elif reg_m_model == reg3_gen_error:
         print("reg3")
-        best_error_rate = (reg(X_train1, y_train1, X_test1, y_test1, 0))
+        best_error_rate, _ = (reg(X_train1, y_train1, X_test1, y_test1, 0))
         print("best test error for i = " + str(i+1) + "is: " + str(best_error_rate))
     elif reg_m_model == reg4_gen_error:
         print("reg4")
-        best_error_rate = (reg(X_train1, y_train1, X_test1, y_test1, 1))
+        best_error_rate, _ = (reg(X_train1, y_train1, X_test1, y_test1, 1))
         print("best test error for i = " + str(i+1) + "is: " + str(best_error_rate))
     elif reg_m_model == reg5_gen_error:
         print("reg5")
-        best_error_rate = (reg(X_train1, y_train1, X_test1, y_test1, 2))
+        best_error_rate, _ = (reg(X_train1, y_train1, X_test1, y_test1, 2))
         print("best test error for i = " + str(i+1) + "is: " + str(best_error_rate))
     
 
