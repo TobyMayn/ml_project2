@@ -6,7 +6,7 @@ from scipy import stats
 from scipy.io import loadmat
 from sklearn import model_selection
 from sklearn.linear_model import LogisticRegression
-from toolbox_02450 import draw_neural_net, train_neural_net
+from toolbox_02450 import draw_neural_net, train_neural_net, mcnemar
 
 def setupAnn(hidden_units):
     n_hidden_units = hidden_units      # number of hidden units
@@ -328,13 +328,13 @@ y_true = y_test
 
 alpha = 0.05
 
-[thetahat_ann, CI_ANN, p_ann] = mcnemar(y_true, yhat_ann[:,0], yhat_ann[:,1], alpha=alpha)
-[thetahat_reg, CI_REG, p_reg] = mcnemar(y_true, yhat_reg[:,0], yhat_reg[:,1], alpha=alpha)
-[thetahat_base, CI_BASE, p_base] = mcnemar(y_true, yhat_base[:,0], yhat_base[:,1], alpha=alpha)
+[thetahat_ann_reg, CI_ANN_REG, p_ann_reg] = mcnemar(y_true, yhat_ann[:], yhat_reg[:], alpha=alpha)
+[thetahat_reg_base, CI_REG_BASE, p_reg_base] = mcnemar(y_true, yhat_reg[:], yhat_base[:], alpha=alpha)
+[thetahat_ann_base, CI_ANN_BASE, p_ann_base] = mcnemar(y_true, yhat_ann[:], yhat_base[:], alpha=alpha)
 
-print("theta = theta_A-theta_B point estimate", thetahat_ann, " CI: ", CI_ANN, "p-value", p_ann)
-print("theta = theta_A-theta_B point estimate", thetahat_reg, " CI: ", CI_REG, "p-value", p_reg)
-print("theta = theta_A-theta_B point estimate", thetahat_base, " CI: ", CI_BASE, "p-value", p_base)
+print("theta = theta_A-theta_B point estimate", thetahat_ann_reg, " CI: ", CI_ANN_REG, "p-value", p_ann_reg)
+print("theta = theta_A-theta_B point estimate", thetahat_reg_base, " CI: ", CI_REG_BASE, "p-value", p_reg_base)
+print("theta = theta_A-theta_B point estimate", thetahat_ann_base, " CI: ", CI_ANN_BASE, "p-value", p_ann_base)
 
 
 
