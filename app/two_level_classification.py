@@ -69,10 +69,10 @@ def ann(x_train, y_train, x_test, y_test, model):
     loss_fn = torch.nn.BCELoss() # notice how this is now a mean-squared-error loss
 
     # Extract training and test set for current CV fold, convert to tensors
-    X_train = torch.Tensor(new_X[train_index,:])
-    y_train = torch.Tensor(y[train_index])
-    X_test = torch.Tensor(new_X[test_index,:])
-    y_test = torch.Tensor(y[test_index])
+    X_train = torch.Tensor(x_train)
+    y_train = torch.Tensor(y_train)
+    X_test = torch.Tensor(x_test)
+    y_test = torch.Tensor(y_test)
 
     # Train the net on training data
     net, final_loss, learning_curve = train_neural_net(model,
@@ -151,11 +151,11 @@ y_test2 = 0
 # Create the outer cross-validation splits
 CV1 = model_selection.KFold(n_splits=K1, shuffle=True)
 
-for (i, (train_index, test_index)) in enumerate(CV1.split(X,y)):
+for (i, (train_index, test_index)) in enumerate(CV1.split(new_X,y)):
 
-    X_train1 = X[train_index,:] # D_par
+    X_train1 = new_X[train_index,:] # D_par
     y_train1 = y[train_index] # D_par
-    X_test1 = X[test_index,:] # D_test
+    X_test1 = new_X[test_index,:] # D_test
     y_test1 = y[test_index] # D_test
 
     CV2 = model_selection.KFold(n_splits=K2, shuffle=True)
