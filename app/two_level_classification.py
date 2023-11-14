@@ -105,7 +105,7 @@ def baseline_seperator(y_test, y_train_mean):
         for x in y_test:
             y_predict.append(0)
 
-    return np.asarray(y_predict)
+    return np.ndarray.transpose(np.asarray([y_predict]))
 
 # Pull CHD column from dataset
 y = np.ndarray.transpose(np.asarray([[int(num) for num in doc.col_values(10, 1, 463)]]))
