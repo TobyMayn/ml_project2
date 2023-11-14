@@ -185,20 +185,20 @@ for (i, (train_index, test_index)) in enumerate(CV1.split(X,y)):
                         temp = 0
                         match i:
                             case 0:
-                                mse, _ = reg(X_train1, y_train1, X_test1, y_test1, -2)
+                                mse, _ = reg(X_train2, y_train2, X_test2, y_test2, -2)
                                 reg1_val_err.append(mse)
                             case 1:
-                                mse, _ = reg(X_train1, y_train1, X_test1, y_test1, -1)
+                                mse, _ = reg(X_train2, y_train2, X_test2, y_test2, -1)
                                 reg2_val_err.append(mse)
                             case 2:
-                                mse, _ = reg(X_train1, y_train1, X_test1, y_test1, 0)
+                                mse, _ = reg(X_train2, y_train2, X_test2, y_test2, 0)
                                 reg3_val_err.append(mse)                            
                             case 3:
-                                mse, _ = reg(X_train1, y_train1, X_test1, y_test1, 1)
+                                mse, _ = reg(X_train2, y_train2, X_test2, y_test2, 1)
 
                                 reg4_val_err.append(mse)                            
                             case 4:
-                                mse, _ = reg(X_train1, y_train1, X_test1, y_test1, 2)
+                                mse, _ = reg(X_train2, y_train2, X_test2, y_test2, 2)
                                 reg5_val_err.append(mse)                    
                 case 2:
                     pass
@@ -259,23 +259,23 @@ for (i, (train_index, test_index)) in enumerate(CV1.split(X,y)):
     
     if reg_m_model == reg1_gen_error:
         print("reg1")
-        best_test_error = (reg(X_train1, y_train1, X_test1, y_test1, -2))
+        best_test_error, _ = (reg(X_train1, y_train1, X_test1, y_test1, -2))
         print("best test error for i = " + str(i+1) + "is: " + str(best_test_error))
     elif reg_m_model == reg2_gen_error:
         print("reg2")
-        best_test_error = (reg(X_train1, y_train1, X_test1, y_test1, -1))
+        best_test_error, _ = (reg(X_train1, y_train1, X_test1, y_test1, -1))
         print("best test error for i = " + str(i+1) + "is: " + str(best_test_error))
     elif reg_m_model == reg3_gen_error:
         print("reg3")
-        best_test_error = (reg(X_train1, y_train1, X_test1, y_test1, 0))
+        best_test_error, _ = (reg(X_train1, y_train1, X_test1, y_test1, 0))
         print("best test error for i = " + str(i+1) + "is: " + str(best_test_error))
     elif reg_m_model == reg4_gen_error:
         print("reg4")
-        best_test_error = (reg(X_train1, y_train1, X_test1, y_test1, 1))
+        best_test_error, _ = (reg(X_train1, y_train1, X_test1, y_test1, 1))
         print("best test error for i = " + str(i+1) + "is: " + str(best_test_error))
     elif reg_m_model == reg5_gen_error:
         print("reg5")
-        best_test_error = (reg(X_train1, y_train1, X_test1, y_test1, 2))
+        best_test_error, _ = (reg(X_train1, y_train1, X_test1, y_test1, 2))
         print("best test error for i = " + str(i+1) + "is: " + str(best_test_error))
     
 
