@@ -209,19 +209,19 @@ for (i, (train_index, test_index)) in enumerate(CV1.split(new_X,y)):
                         temp = 0
                         match i:
                             case 0:
-                                error_rate, _ = reg(X_train1, y_train1, X_test1, y_test1, -2)
+                                error_rate, _ = reg(X_train2, y_train2, X_test2, y_test2, -2)
                                 reg1_val_err.append(error_rate)
                             case 1:
-                                error_rate, _ = reg(X_train1, y_train1, X_test1, y_test1, -1)
+                                error_rate, _ = reg(X_train2, y_train2, X_test2, y_test2, -1)
                                 reg2_val_err.append(error_rate)
                             case 2:
-                                error_rate, _ = reg(X_train1, y_train1, X_test1, y_test1, 0)
+                                error_rate, _ = reg(X_train2, y_train2, X_test2, y_test2, 0)
                                 reg3_val_err.append(error_rate)                            
                             case 3:
-                                error_rate, _ = reg(X_train1, y_train1, X_test1, y_test1, 1)
+                                error_rate, _ = reg(X_train2, y_train2, X_test2, y_test2, 1)
                                 reg4_val_err.append(error_rate)                            
                             case 4:
-                                error_rate, _ = reg(X_train1, y_train1, X_test1, y_test1, 2)
+                                error_rate, _ = reg(X_train2, y_train2, X_test2, y_test2, 2)
                                 reg5_val_err.append(error_rate)                    
                 case 2:
                     pass
